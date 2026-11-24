@@ -3,28 +3,55 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
 html, body {
   margin: 0;
   background: transparent;
+  font-family: sans-serif;
 }
 #caption {
+  display: none;
   position: fixed;
   bottom: 8%;
   left: 5%;
   background: #1246a0;
   color: white;
-  padding: 15px 30px;
+  padding: 15px 25px;
   border-radius: 8px;
-  font-family: sans-serif;
+}
+#school {
+  font-size: 22px;
+  font-weight: bold;
+}
+#player {
+  font-size: 36px;
   font-weight: bold;
 }
 </style>
 </head>
 <body>
 <div id="caption">
-  <div style="font-size:22px">풀카운트TV</div>
-  <div style="font-size:36px">선수소개 테스트</div>
+  <div id="school"></div>
+  <div id="player"></div>
 </div>
+<script>
+const url = 'https://script.google.com/macros/s/AKfycbxLv10b3wtPoXT1yXEYkotSEVWj43CoRCdYMHQvky7CVWS6KpWqud2JdEeFxxwrsLAl/exec?page=data';
+
+async function update() {
+  try {
+    const res = await fetch(url + '&t=' + Date.now());
+    const data = await res.json();
+    document.getElementById('school').textContent = data.school;
+    document.getElementById('player').textContent = data.player;
+    document.getElementById('caption').style.display =
+      data.visible ? 'block' : 'none';
+  } catch (e) {
+    console.log(e);
+  }
+}
+update();
+setInterval(update, 2000);
+</script>
 </body>
 </html>
