@@ -1,57 +1,93 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
-html, body {
-  margin: 0;
-  background: transparent;
-  font-family: sans-serif;
+html,body {
+  margin:0;
+  background:transparent;
+  font-family:sans-serif;
 }
 #caption {
-  display: none;
-  position: fixed;
-  bottom: 8%;
-  left: 5%;
-  background: #1246a0;
-  color: white;
-  padding: 15px 25px;
-  border-radius: 8px;
+  display:none;
+  position:fixed;
+  bottom:8%;
+  left:5%;
+  color:white;
+  border-radius:6px;
+  overflow:hidden;
+}
+#number {
+  background:#09264c;
+  font-size:52px;
+  font-weight:bold;
+  padding:18px;
+  display:flex;
+  align-items:center;
+}
+#info {
+  background:#1246a0;
+  min-width:230px;
 }
 #school {
-  font-size: 22px;
-  font-weight: bold;
+  font-size:22px;
+  font-weight:bold;
+  padding:8px 18px 0;
 }
-#player {
-  font-size: 36px;
-  font-weight: bold;
+#main {
+  padding:4px 18px 10px;
+}
+#name {
+  font-size:36px;
+  font-weight:bold;
+}
+#position {
+  font-size:24px;
+  color:#ffdc55;
+  margin-left:12px;
+}
+#extra {
+  background:#09264c;
+  font-size:22px;
+  padding:7px 18px;
 }
 </style>
 </head>
 <body>
 <div id="caption">
-  <div id="school"></div>
-  <div id="player"></div>
+  <div id="number"></div>
+  <div id="info">
+    <div id="school"></div>
+    <div id="main">
+      <span id="name"></span>
+      <span id="position"></span>
+    </div>
+    <div id="extra"></div>
+  </div>
 </div>
 <script>
-const url = 'https://script.google.com/macros/s/AKfycbxLv10b3wtPoXT1yXEYkotSEVWj43CoRCdYMHQvky7CVWS6KpWqud2JdEeFxxwrsLAl/exec?page=data';
+const url='https://script.google.com/macros/s/AKfycbxLv10b3wtPoXT1yXEYkotSEVWj43CoRCdYMHQvky7CVWS6KpWqud2JdEeFxxwrsLAl/exec?page=data';
 
-async function update() {
-  try {
-    const res = await fetch(url + '&t=' + Date.now());
-    const data = await res.json();
-    document.getElementById('school').textContent = data.school;
-    document.getElementById('player').textContent = data.player;
-    document.getElementById('caption').style.display =
-      data.visible ? 'block' : 'none';
-  } catch (e) {
+async function update(){
+  try{
+    const res=await fetch(url+'&t='+Date.now());
+    const data=await res.json();
+    const p=String(data.player||'').trim().split(/\s+/);
+    document.getElementById('school').textContent=data.school||'';
+    document.getElementById('number').textContent=p[0]||'';
+    document.getElementById('name').textContent=p[1]||'';
+    document.getElementById('position').textContent=p[2]||'';
+    const extra=document.getElementById('extra');
+    extra.textContent=p.slice(3).join(' | ');
+    extra.style.display=p.length>3?'block':'none';
+    document.getElementById('caption').style.display=data.visible?'flex':'none';
+  }catch(e){
     console.log(e);
   }
 }
 update();
-setInterval(update, 2000);
+setInterval(update,2000);
 </script>
 </body>
 </html>
